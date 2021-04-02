@@ -89,6 +89,15 @@ class board():
                 self.finding = False
                 self.pathFind()
 
+    def clear(self):
+        self.aStar = []
+        self.step = 0
+        self.finish = None
+        self.start = None
+        self.path = []
+        self.board = np.zeros([self.settings.row, self.settings.col])
+        self.finding = False
+        
     def controls(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -104,6 +113,8 @@ class board():
                     self.finish = xy
                 elif event.key == pygame.K_SPACE:
                     self.finding = True
+                elif event.key == pygame.K_c:
+                    self.clear()
             elif event.type == pygame.MOUSEMOTION:
                 if self.drawing:
                     pos = pygame.mouse.get_pos()
