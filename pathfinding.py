@@ -7,6 +7,10 @@ class board():
         self.settings = Settings()
 
         pygame.init()
+
+        pygame.font.init()
+        self.myfont = pygame.font.SysFont(self.settings.font, self.settings.fontsize)
+
         self.screen = pygame.display.set_mode(self.settings.size)
         self.board = np.zeros([self.settings.row, self.settings.col])
 
@@ -21,6 +25,11 @@ class board():
             self.board[row][col] = 1
         elif self.board[row][col] == 1:
             self.board[row][col] = 0
+
+    def draw_values(self,l,d):
+        for i in self.aStar:
+            textsurface = self.myfont.render(str(i[2]), False,(200,200,200))
+            self.screen.blit(textsurface,(i[0]*l,i[1]*d))
 
     def draw(self):
         self.screen.fill(self.settings.bgcolor)
@@ -39,6 +48,8 @@ class board():
             pygame.draw.rect(self.screen, self.settings.scolor, (l*self.start[0], d*self.start[1], l, d))
         if self.finish:
             pygame.draw.rect(self.screen, self.settings.fcolor, (l*self.finish[0], d*self.finish[1], l, d))
+        
+        self.draw_values(l,d)
         pygame.display.update()
 
     def in_list(self, x, y):
@@ -97,7 +108,7 @@ class board():
         self.path = []
         self.board = np.zeros([self.settings.row, self.settings.col])
         self.finding = False
-        
+
     def controls(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
