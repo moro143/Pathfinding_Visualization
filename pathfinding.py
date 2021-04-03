@@ -14,7 +14,7 @@ class board():
         self.screen = pygame.display.set_mode(self.settings.size)
         self.board = np.zeros([self.settings.row, self.settings.col])
 
-        self.aStar = []
+        self.values = []
         self.step = 0
         self.finish = None
         self.start = None
@@ -27,7 +27,7 @@ class board():
             self.board[row][col] = 0
 
     def draw_values(self,l,d):
-        for i in self.aStar:
+        for i in self.values:
             textsurface = self.myfont.render(str(i[2]), False,(200,200,200))
             self.screen.blit(textsurface,(i[0]*l,i[1]*d))
 
@@ -35,7 +35,7 @@ class board():
         self.screen.fill(self.settings.bgcolor)
         l = self.settings.size[0]/len(self.board)
         d = self.settings.size[1]/len(self.board[0])
-        for i in self.aStar:
+        for i in self.values:
             pygame.draw.rect(self.screen, self.settings.acolor, (l*i[0], d*i[1], l, d))
         for i in self.path:
             if i != None:
@@ -57,18 +57,18 @@ class board():
             good = True
             if self.board[y][x] == 1:
                 good = False
-            for j in self.aStar:
+            for j in self.values:
                 if j[0]==x and j[1]==y:
                     good = False
             if good:
-                self.aStar.append([x,y,self.step+1])
+                self.values.append([x,y,self.step+1])
     
     def pathFind(self):
         tmp = self.step
         lista = [self.finish]
         for i in range(tmp):
             t = tmp-i
-            for j in self.aStar:
+            for j in self.values:
                 if t == j[2]:
                     if j[0]==lista[-1][0]+1 and j[1]==lista[-1][1]:
                         lista.append(j)
@@ -84,24 +84,24 @@ class board():
                         break
         self.path = lista
 
-    def aStarFind(self):
-        if len(self.aStar) == 0:
-            self.aStar.append(self.start+[0])
+    def algo(self):
+        if len(self.values) == 0:
+            self.values.append(self.start+[0])
         else:
-            for i in self.aStar:
+            for i in self.values:
                 if i[2] == self.step:
                     self.in_list(i[0]+1, i[1])
                     self.in_list(i[0]-1, i[1])
                     self.in_list(i[0], i[1]+1)
                     self.in_list(i[0], i[1]-1)
             self.step+=1
-        for i in self.aStar:
+        for i in self.values:
             if i[0] == self.finish[0] and i[1] == self.finish[1]:
                 self.finding = False
                 self.pathFind()
 
     def clear(self):
-        self.aStar = []
+        self.values = []
         self.step = 0
         self.finish = None
         self.start = None
@@ -148,7 +148,7 @@ class board():
         while self.running:
             self.controls()
             if self.finding:
-                self.aStarFind()
+                self.algo()
             self.draw()
 
 if __name__ == "__main__":
