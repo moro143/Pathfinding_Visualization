@@ -14,6 +14,9 @@ class board():
         self.screen = pygame.display.set_mode(self.settings.size)
         self.board = np.zeros([self.settings.row, self.settings.col])
 
+        self.finding = False
+        self.method = None
+
         self.values = []
         self.step = 0
         self.finish = None
@@ -84,7 +87,7 @@ class board():
                         break
         self.path = lista
 
-    def algo(self):
+    def basic_alg(self):
         if len(self.values) == 0:
             self.values.append(self.start+[0])
         else:
@@ -126,6 +129,8 @@ class board():
                     self.finding = True
                 elif event.key == pygame.K_c:
                     self.clear()
+                elif event.key == pygame.K_1:
+                    self.method = "basic"
             elif event.type == pygame.MOUSEMOTION:
                 if self.drawing:
                     pos = pygame.mouse.get_pos()
@@ -143,12 +148,10 @@ class board():
         self.running = True
         self.drawing = False
         self.last = []
-        self.finding = False
-
         while self.running:
             self.controls()
-            if self.finding:
-                self.algo()
+            if self.finding and self.method == "basic":
+                self.basic_alg()
             self.draw()
 
 if __name__ == "__main__":
